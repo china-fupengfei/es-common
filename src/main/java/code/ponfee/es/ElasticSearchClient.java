@@ -50,13 +50,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 
-import code.ponfee.commons.elasticsearch.bulk.configuration.BulkProcessorConfiguration;
-import code.ponfee.commons.elasticsearch.mapping.IElasticSearchMapping;
 import code.ponfee.commons.json.Jsons;
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.model.ResultCode;
 import code.ponfee.commons.util.ObjectUtils;
+import code.ponfee.es.bulk.configuration.BulkProcessorConfiguration;
+import code.ponfee.es.mapping.IElasticSearchMapping;
 
 /**
  * ElasticSearch Client
@@ -66,7 +66,7 @@ import code.ponfee.commons.util.ObjectUtils;
 public class ElasticSearchClient implements DisposableBean {
 
     static final TimeValue SCROLL_TIMEOUT = TimeValue.timeValueSeconds(120); // 2 minutes
-    private static final int SCROLL_SIZE = 5000; // 默认滚动数据量
+    private static final int SCROLL_SIZE = 10000; // 默认滚动数据量
 
     private static Logger logger = LoggerFactory.getLogger(ElasticSearchClient.class);
 
@@ -397,8 +397,8 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public String addDoc(String index, String type, Object object) {
         //return client.prepareIndex(index, type).setSource(object).get().getId();
-        return client.prepareIndex(index, type).
-                     setSource(object, XContentType.JSON)
+        return client.prepareIndex(index, type)
+                     .setSource(object, XContentType.JSON)
                      .get().getId();
     }
 

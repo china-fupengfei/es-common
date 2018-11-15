@@ -3,9 +3,9 @@ package code.ponfee.es.bulk.configuration;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
 
-import code.ponfee.commons.elasticsearch.bulk.listener.LoggingBulkProcessorListener;
-import code.ponfee.commons.elasticsearch.bulk.options.BulkProcessingOptions;
-import code.ponfee.commons.elasticsearch.bulk.options.BulkProcessingOptionsBuilder;
+import code.ponfee.es.bulk.listener.LoggingBulkProcessorListener;
+import code.ponfee.es.bulk.options.BulkProcessingOptions;
+import code.ponfee.es.bulk.options.BulkProcessingOptionsBuilder;
 
 /**
  * bulk processor配置类

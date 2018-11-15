@@ -20,7 +20,7 @@ import org.elasticsearch.index.mapper.RootObjectMapper;
 
 import com.google.common.collect.ImmutableMap;
 
-import code.ponfee.commons.elasticsearch.exception.GetMappingFailedException;
+import code.ponfee.es.exception.GetMappingFailedException;
 
 /**
  * Elastic Search Mapping
