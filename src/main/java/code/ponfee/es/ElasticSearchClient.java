@@ -90,7 +90,7 @@ public class ElasticSearchClient implements DisposableBean {
      * @param clusterNodes
      * @return
      */
-    private static TransportClient connectClient(String clusterName, String clusterNodes) {
+    public static TransportClient connectClient(String clusterName, String clusterNodes) {
         Settings settings = Settings.builder()
                                     .put("cluster.name", clusterName)
                                     .put("client.transport.sniff", true)
@@ -378,8 +378,9 @@ public class ElasticSearchClient implements DisposableBean {
         entities.map(x -> Optional.of(Jsons.toBytes(x)))
                 .filter(Optional::isPresent)
                 .map(x -> client.prepareIndex().setIndex(index).setType(type)
-                                               .setSource(x.get(), XContentType.JSON).request())
-                .forEach(bulkProcessor::add);
+                                               .setSource(x.get(), XContentType.JSON)
+                                               .request()
+                ).forEach(bulkProcessor::add);
         bulkProcessor.flush();
         try {
             bulkProcessor.awaitClose(60, TimeUnit.SECONDS);
@@ -439,6 +440,7 @@ public class ElasticSearchClient implements DisposableBean {
 
     /**
      * 添加文档，指定id（PUT）
+     * 
      * @param index  索引
      * @param type   类型
      * @param map    文档数据：key为id，value为source
@@ -446,12 +448,11 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public Result<Void> addDocs(String index, String type, Map<String, Object> map) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        for (Entry<String, Object> entry : map.entrySet()) {
+        map.entrySet().stream().forEach(e -> {
             bulkRequest.add(
-                client.prepareIndex(index, type, entry.getKey())
-                      .setSource(entry.getValue())
+                client.prepareIndex(index, type, e.getKey()).setSource(e.getValue())
             );
-        }
+        });
         BulkResponse resp = bulkRequest.get();
         if (resp.hasFailures()) {
             return Result.failure(ResultCode.SERVER_ERROR, resp.buildFailureMessage());
@@ -462,6 +463,7 @@ public class ElasticSearchClient implements DisposableBean {
 
     /**
      * 批量添加文档：map为source（其中含key为id的键，PUT）
+     * 
      * @param index
      * @param type
      * @param list
