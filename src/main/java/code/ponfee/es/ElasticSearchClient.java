@@ -375,7 +375,7 @@ public class ElasticSearchClient implements DisposableBean {
     public <T> void bulkProcessor(String index, String type, Stream<T> entities, 
                                   BulkProcessorConfiguration config) {
         BulkProcessor bulkProcessor = config.build(client);
-        entities.map(x -> Optional.of(Jsons.toBytes(x)))
+        entities.map(x -> Optional.ofNullable(Jsons.toBytes(x)))
                 .filter(Optional::isPresent)
                 .map(x -> client.prepareIndex().setIndex(index).setType(type)
                                                .setSource(x.get(), XContentType.JSON)
