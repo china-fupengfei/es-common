@@ -25,8 +25,8 @@ public class ESQueryBuilder {
     private final String[] types; // 类型
     private BoolQueryBuilder boolQuery; // bool筛选条件
     private String[] fields; // 查询的字段
-    private final List<SortBuilder<?>> sorts = new ArrayList<>(); // 排序
-    private final List<AggregationBuilder> aggs = new ArrayList<>(); // 分组聚合
+    private final List<SortBuilder<?>> sorts = new ArrayList<>(1); // 排序
+    private final List<AggregationBuilder> aggs = new ArrayList<>(1); // 分组聚合
 
     private ESQueryBuilder(String[] indices, String[] types) {
         this.indices = indices;
