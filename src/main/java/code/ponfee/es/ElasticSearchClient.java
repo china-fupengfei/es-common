@@ -516,6 +516,7 @@ public class ElasticSearchClient implements DisposableBean {
      * @param map
      */
     public void updDoc(String index, String type, String id, Map<String, Object> map) {
+        //client.prepareIndex(index, type, id).setSource(json, XContentType.JSON).get();
         try {
             UpdateRequest updateRequest = new UpdateRequest(index, type, id);
             XContentBuilder xcb = XContentFactory.jsonBuilder().startObject();
@@ -862,7 +863,8 @@ public class ElasticSearchClient implements DisposableBean {
         for (SearchHit hit : hits) {
             result.add(convertFromMap(hit.getSourceAsMap(), clazz));
         }
-        Page<T> page = new Page<>(result);
+
+        Page<T> page = Page.of(result);
         page.setTotal(total);
         page.setPages((int) (total + pageSize - 1) / pageSize); // 总页数
         page.setPageNum(pageNo);
