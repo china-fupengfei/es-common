@@ -449,9 +449,9 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public Result<Void> addDocs(String index, String type, Map<String, Object> map) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        map.entrySet().stream().forEach(e -> {
+        map.forEach((key, value) -> {
             bulkRequest.add(
-                client.prepareIndex(index, type, e.getKey()).setSource(e.getValue())
+                client.prepareIndex(index, type, key).setSource(value)
             );
         });
         BulkResponse resp = bulkRequest.get();
