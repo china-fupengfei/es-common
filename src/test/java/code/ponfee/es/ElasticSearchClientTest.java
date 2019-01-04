@@ -2,11 +2,20 @@ package code.ponfee.es;
 
 import java.io.IOException;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.junit.Test;
 
-public class ElasticSearchClientTest {
+public class ElasticSearchClientTest extends BaseTest<ElasticSearchClient> {
 
+    @Test
+    public void test1() {
+        SearchRequestBuilder search = getBean().prepareSearch("ddt_risk_wastaged", "wastaged_city_es");
+        consoleJson(getBean().rankingSearch(search, 10));
+    }
+
+    
     public static void main(String[] args) throws IOException {
         XContentBuilder mapping = XContentFactory.jsonBuilder()
             .startObject() // {
@@ -37,4 +46,5 @@ public class ElasticSearchClientTest {
             .endObject(); // }
         System.out.println(mapping.string());
     }
+
 }

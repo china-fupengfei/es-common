@@ -11,6 +11,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -33,17 +34,17 @@ public class ESQueryBuilder {
         this.types = types;
     }
 
-    public static ESQueryBuilder newBuilder(String index, String type) {
-        return new ESQueryBuilder(new String[] { index }, new String[] { type });
+    public static ESQueryBuilder newBuilder(String index, String... type) {
+        return new ESQueryBuilder(new String[] { index }, type);
     }
 
-    public static ESQueryBuilder newBuilder(String[] indices, String[] types) {
+    public static ESQueryBuilder newBuilder(String[] indices, String... types) {
         return new ESQueryBuilder(indices, types);
     }
 
     public ESQueryBuilder fields(String... fields) {
         if (this.fields != null) {
-            throw new UnsupportedOperationException("don't repeat set fields.");
+            throw new UnsupportedOperationException("Cannot repeat set fields.");
         }
         this.fields = fields;
         return this;
@@ -382,6 +383,26 @@ public class ESQueryBuilder {
             search.addAggregation(agg);
         }
         return search.setSize(size);
+    }
+
+    public String dsl(int from, int size) {
+        SearchSourceBuilder search = new SearchSourceBuilder();
+        if (fields != null) {
+            search.fetchSource(fields, null);
+        }
+        if (boolQuery != null) {
+            search.query(boolQuery);
+        }
+        for (SortBuilder<?> sort : sorts) {
+            search.sort(sort);
+        }
+        for (AggregationBuilder agg : aggs) {
+            search.aggregation(agg);
+        }
+        search.from(from);
+        search.size(size);
+
+        return search.toString();
     }
 
 }

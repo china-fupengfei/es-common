@@ -377,9 +377,10 @@ public class ElasticSearchClient implements DisposableBean {
         BulkProcessor bulkProcessor = config.build(client);
         entities.map(x -> Optional.ofNullable(Jsons.toBytes(x)))
                 .filter(Optional::isPresent)
-                .map(x -> client.prepareIndex().setIndex(index).setType(type)
-                                               .setSource(x.get(), XContentType.JSON)
-                                               .request()
+                .map(x -> client.prepareIndex()
+                                 .setIndex(index).setType(type)
+                                .setSource(x.get(), XContentType.JSON)
+                                .request()
                 ).forEach(bulkProcessor::add);
         bulkProcessor.flush();
         try {
@@ -755,11 +756,14 @@ public class ElasticSearchClient implements DisposableBean {
     public <T> List<T> fullSearch(ESQueryBuilder query, Class<T> clazz, int eachScrollSize) {
         SearchResponse scrollResp = query.scroll(client, eachScrollSize);
         List<T> result = new ArrayList<>((int) scrollResp.getHits().getTotalHits());
-        this.scrollSearch(scrollResp, eachScrollSize, (searchHits, totalRecords, totalPages, pageNo) -> {
-            for (SearchHit hit : searchHits.getHits()) {
-                result.add(convertFromMap(hit.getSourceAsMap(), clazz));
+        this.scrollSearch(
+            scrollResp, eachScrollSize, 
+            (searchHits, totalRecords, totalPages, pageNo) -> {
+                for (SearchHit hit : searchHits.getHits()) {
+                    result.add(convertFromMap(hit.getSourceAsMap(), clazz));
+                }
             }
-        });
+        );
         return result;
     }
 
