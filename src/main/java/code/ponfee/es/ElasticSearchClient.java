@@ -289,7 +289,8 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public boolean updateSettings(String index, Settings settings) {
         return indicesAdminClient().prepareUpdateSettings(index)
-                                   .setSettings(settings).get().isAcknowledged();
+                                   .setSettings(settings)
+                                   .get().isAcknowledged();
     }
 
     /**
@@ -300,7 +301,8 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public boolean addAlias(String alias, String... indices) {
         return indicesAdminClient().prepareAliases()
-                                   .addAlias(indices, alias).execute().isDone();
+                                   .addAlias(indices, alias)
+                                   .execute().isDone();
     }
 
     /**
@@ -323,7 +325,8 @@ public class ElasticSearchClient implements DisposableBean {
      * @return
      */
     public boolean removeAlias(String[] aliase, String... indices) {
-        return indicesAdminClient().prepareAliases().removeAlias(indices, aliase)
+        return indicesAdminClient().prepareAliases()
+                                   .removeAlias(indices, aliase)
                                    .execute().isDone();
     }
 
@@ -353,7 +356,8 @@ public class ElasticSearchClient implements DisposableBean {
      */
     public boolean isTypesExists(String indices, String... types) {
         return indicesAdminClient().prepareTypesExists(indices)
-                                   .setTypes(types).get().isExists();
+                                   .setTypes(types)
+                                   .get().isExists();
     }
 
     // --------------------------------------bulk processor---------------------------------------
@@ -891,7 +895,8 @@ public class ElasticSearchClient implements DisposableBean {
      * @param scrollSize
      * @param callback
      */
-    private void scrollSearch(SearchResponse scrollResp, int scrollSize, ScrollSearchCallback callback) {
+    private void scrollSearch(SearchResponse scrollResp, int scrollSize, 
+                              ScrollSearchCallback callback) {
         try {
             SearchHits searchHits = scrollResp.getHits();
             long totalRecords = searchHits.getTotalHits(); // 总记录数

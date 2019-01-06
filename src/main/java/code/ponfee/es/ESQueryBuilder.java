@@ -6,7 +6,7 @@ import java.util.List;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -344,28 +344,30 @@ public class ESQueryBuilder {
     }
 
     // --------------------------package methods-------------------------
-    SearchResponse pagination(TransportClient client, int from, int size) {
+    SearchResponse pagination(Client client, int from, int size) {
         SearchRequestBuilder search = build(client, size);
         search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH); // 深度分布
         search.setFrom(from).setExplain(false);
         return search.get();
     }
 
-    SearchResponse scroll(TransportClient client, int size) {
+    SearchResponse scroll(Client client, int size) {
         SearchRequestBuilder search = build(client, size);
         search.setScroll(ElasticSearchClient.SCROLL_TIMEOUT);
         //search.setSearchType(SearchType.QUERY_THEN_FETCH); // default QUERY_THEN_FETCH
         return search.get();
     }
 
-    Aggregations aggregation(TransportClient client) {
+    Aggregations aggregation(Client client) {
         SearchRequestBuilder search = build(client, 0);
         search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
         return search.get().getAggregations();
     }
 
     // --------------------------private methods-------------------------
-    private SearchRequestBuilder build(TransportClient client, int size) {
+    private SearchRequestBuilder build(Client client, int size) {
+        //search.request()          -> SearchRequest
+        //search.request().source() -> SearchSourceBuilder
         SearchRequestBuilder search = client.prepareSearch(indices);
         if (types != null) {
             search.setTypes(types);
@@ -385,7 +387,7 @@ public class ESQueryBuilder {
         return search.setSize(size);
     }
 
-    public String dsl(int from, int size) {
+    public String toDsl(int from, int size) {
         SearchSourceBuilder search = new SearchSourceBuilder();
         if (fields != null) {
             search.fetchSource(fields, null);
