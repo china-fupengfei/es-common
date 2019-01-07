@@ -58,7 +58,7 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         // Populate the Settings:
         Settings.Builder settingsBuilder = getSettingsBuilder();
 
-        // new Mapping(arg0, arg1, arg2, arg3)getSourceTransforms(),
+        // new Mapping(arg0, arg1, arg2, arg3)
         // Build the Mapping:
         Mapping mapping = new Mapping(
             version,
@@ -74,40 +74,29 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
     }
 
     private Settings.Builder getSettingsBuilder() {
-
         Settings.Builder settingsBuilder = Settings.builder()
                 .put(IndexMetaData.SETTING_VERSION_CREATED, version)
                 .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());
 
         configureSettingsBuilder(settingsBuilder);
-
         return settingsBuilder;
     }
 
     private RootObjectMapper.Builder getRootObjectBuilder() {
-
         RootObjectMapper.Builder rootObjectMapperBuilder = new RootObjectMapper.Builder(indexType);
-
         configureRootObjectBuilder(rootObjectMapperBuilder);
-
         return rootObjectMapperBuilder;
     }
 
     private MetadataFieldMapper[] getMetaDataFieldMappers() {
-
         List<MetadataFieldMapper> metadataFieldMapper = new ArrayList<>();
-
         configureMetaDataFieldMappers(metadataFieldMapper);
-
         return metadataFieldMapper.toArray(new MetadataFieldMapper[metadataFieldMapper.size()]);
     }
 
     private ImmutableMap<String, Object> getMeta() {
-
         ImmutableMap.Builder<String, Object> metaFieldsBuilder = new ImmutableMap.Builder<>();
-
         configureMetaFields(metaFieldsBuilder);
-
         return metaFieldsBuilder.build();
     }
 

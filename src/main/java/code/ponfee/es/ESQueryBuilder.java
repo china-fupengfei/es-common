@@ -387,7 +387,19 @@ public class ESQueryBuilder {
         return search.setSize(size);
     }
 
-    public String toDsl(int from, int size) {
+    @Override
+    public String toString() {
+        return toString(0, 0);
+    }
+
+    /**
+     * Returns a string of search request dsl
+     * 
+     * @param from the from
+     * @param size the size
+     * @return a string of search request dsl
+     */
+    public String toString(int from, int size) {
         SearchSourceBuilder search = new SearchSourceBuilder();
         if (fields != null) {
             search.fetchSource(fields, null);

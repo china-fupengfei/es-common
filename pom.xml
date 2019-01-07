@@ -51,7 +51,7 @@
           <artifactId>third-jce</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>jdk-lib</groupId>
+          <groupId>com.sun</groupId>
           <artifactId>tools</artifactId>
         </exclusion>
         <exclusion>
@@ -71,10 +71,6 @@
           <artifactId>hessian</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.quartz-scheduler</groupId>
-          <artifactId>quartz</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>com.sun.mail</groupId>
           <artifactId>javax.mail</artifactId>
         </exclusion>
@@ -89,6 +85,10 @@
         <exclusion>
           <groupId>org.springframework.data</groupId>
           <artifactId>spring-data-redis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>redis.clients</groupId>
+          <artifactId>jedis</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.redisson</groupId>
@@ -136,14 +136,14 @@
       <version>1.0.16</version>
     </dependency>
     <dependency>
-      <groupId>org.locationtech.spatial4j</groupId>
-      <artifactId>spatial4j</artifactId>
-      <version>0.7</version>
-    </dependency>
-    <dependency>
       <groupId>com.vividsolutions</groupId>
       <artifactId>jts</artifactId>
       <version>1.13</version>
     </dependency>
+    <!-- <dependency>
+      <groupId>org.locationtech.spatial4j</groupId>
+      <artifactId>spatial4j</artifactId>
+      <version>0.7</version>
+    </dependency> -->
   </dependencies>
 </project>
