@@ -52,6 +52,7 @@ import org.springframework.beans.factory.DisposableBean;
 
 import code.ponfee.commons.json.Jsons;
 import code.ponfee.commons.model.Page;
+import code.ponfee.commons.model.PageHandler;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.model.ResultCode;
 import code.ponfee.commons.util.ObjectUtils;
@@ -874,7 +875,7 @@ public class ElasticSearchClient implements DisposableBean {
 
         Page<T> page = Page.of(result);
         page.setTotal(total);
-        page.setPages((int) (total + pageSize - 1) / pageSize); // 总页数
+        page.setPages(PageHandler.computeTotalPages(total, pageSize)); // 总页数
         page.setPageNum(pageNo);
         page.setPageSize(pageSize);
         page.setSize(result.size());

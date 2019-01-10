@@ -389,14 +389,14 @@ public class ESQueryBuilder {
 
     @Override
     public String toString() {
-        return toString(0, 0);
+        return toString(-1, -1);
     }
 
     /**
      * Returns a string of search request dsl
      * 
-     * @param from the from
-     * @param size the size
+     * @param from the from, start 0
+     * @param size the size, if 0 then miss hits 
      * @return a string of search request dsl
      */
     public String toString(int from, int size) {
@@ -413,8 +413,12 @@ public class ESQueryBuilder {
         for (AggregationBuilder agg : aggs) {
             search.aggregation(agg);
         }
-        search.from(from);
-        search.size(size);
+        if (from > -1) {
+            search.from(from);
+        }
+        if (size > -1) {
+            search.size(size);
+        }
 
         return search.toString();
     }
