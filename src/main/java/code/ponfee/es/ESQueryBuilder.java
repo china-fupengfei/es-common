@@ -58,10 +58,18 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder mustEquals(String name, Object term) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.termQuery(name, term));
+        query().must(QueryBuilders.termQuery(name, term));
+        return this;
+    }
+
+    /**
+     * ? !=term
+     * @param name
+     * @param term
+     * @return
+     */
+    public ESQueryBuilder mustNotEquals(String name, Object term) {
+        query().mustNot(QueryBuilders.termQuery(name, term));
         return this;
     }
 
@@ -72,10 +80,7 @@ public class ESQueryBuilder {
      * @return
      */
     public <T> ESQueryBuilder mustIn(String name, List<T> items) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.termsQuery(name, items));
+        query().must(QueryBuilders.termsQuery(name, items));
         return this;
     }
 
@@ -86,10 +91,18 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder mustIn(String name, Object... items) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.termsQuery(name, items));
+        query().must(QueryBuilders.termsQuery(name, items));
+        return this;
+    }
+
+    /**
+     * ? NOT IN(item1,item2,..,itemn)
+     * @param name
+     * @param items
+     * @return
+     */
+    public ESQueryBuilder mustNotIn(String name, Object... items) {
+        query().mustNot(QueryBuilders.termsQuery(name, items));
         return this;
     }
 
@@ -102,121 +115,7 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder mustRange(String name, Object from, Object to) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.rangeQuery(name).from(from).to(to));
-        return this;
-    }
-
-    /**
-     * EXISTS(name) && name IS NOT NULL && name IS NOT EMPTY
-     * @param name
-     * @return
-     */
-    public ESQueryBuilder mustExists(String name) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.existsQuery(name));
-        return this;
-    }
-
-    /**
-     * NOT EXISTS(name) && name IS NULL && name IS EMPTY
-     * @param name
-     * @return
-     */
-    public ESQueryBuilder mustNotExists(String name) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.existsQuery(name));
-        return this;
-    }
-
-    /**
-     * name LIKE 'prefix%'
-     * @param name
-     * @param prefix
-     * @return
-     */
-    public ESQueryBuilder mustPrefix(String name, String prefix) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.prefixQuery(name, prefix));
-        return this;
-    }
-
-    /**
-     * regexp query
-     * @param name
-     * @param regexp
-     * @return
-     */
-    public ESQueryBuilder mustRegexp(String name, String regexp) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.regexpQuery(name, regexp));
-        return this;
-    }
-
-    /**
-     * like query
-     * name LIKE '*wildcard*'
-     * @param name
-     * @param wildcard
-     * @return
-     */
-    public ESQueryBuilder mustLike(String name, String wildcard) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.must(QueryBuilders.wildcardQuery(name, wildcard));
-        return this;
-    }
-
-    /**
-     * not like
-     * @param name  before or after or both here with *
-     * @param wildcard
-     * @return
-     */
-    public ESQueryBuilder mustNotLike(String name, String wildcard) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.wildcardQuery(name, wildcard));
-        return this;
-    }
-
-    /**
-     * ? !=term
-     * @param name
-     * @param term
-     * @return
-     */
-    public ESQueryBuilder mustNotEquals(String name, Object term) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.termQuery(name, term));
-        return this;
-    }
-
-    /**
-     * ? NOT IN(item1,item2,..,itemn)
-     * @param name
-     * @param items
-     * @return
-     */
-    public ESQueryBuilder mustNotIn(String name, Object... items) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.termsQuery(name, items));
+        query().must(QueryBuilders.rangeQuery(name).from(from).to(to));
         return this;
     }
 
@@ -228,10 +127,38 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder mustNotRange(String name, Object from, Object to) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.rangeQuery(name).from(from).to(to));
+        query().mustNot(QueryBuilders.rangeQuery(name).from(from).to(to));
+        return this;
+    }
+
+    /**
+     * EXISTS(name) && name IS NOT NULL && name IS NOT EMPTY
+     * @param name
+     * @return
+     */
+    public ESQueryBuilder mustExists(String name) {
+        query().must(QueryBuilders.existsQuery(name));
+        return this;
+    }
+
+    /**
+     * NOT EXISTS(name) && name IS NULL && name IS EMPTY
+     * @param name
+     * @return
+     */
+    public ESQueryBuilder mustNotExists(String name) {
+        query().mustNot(QueryBuilders.existsQuery(name));
+        return this;
+    }
+
+    /**
+     * name LIKE 'prefix%'
+     * @param name
+     * @param prefix
+     * @return
+     */
+    public ESQueryBuilder mustPrefix(String name, String prefix) {
+        query().must(QueryBuilders.prefixQuery(name, prefix));
         return this;
     }
 
@@ -242,10 +169,52 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder mustNotPrefix(String name, String prefix) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.mustNot(QueryBuilders.prefixQuery(name, prefix));
+        query().mustNot(QueryBuilders.prefixQuery(name, prefix));
+        return this;
+    }
+
+    /**
+     * regexp query
+     * @param name
+     * @param regexp
+     * @return
+     */
+    public ESQueryBuilder mustRegexp(String name, String regexp) {
+        query().must(QueryBuilders.regexpQuery(name, regexp));
+        return this;
+    }
+
+    /**
+     * regexp query
+     * @param name
+     * @param regexp
+     * @return
+     */
+    public ESQueryBuilder mustNotRegexp(String name, String regexp) {
+        query().mustNot(QueryBuilders.regexpQuery(name, regexp));
+        return this;
+    }
+
+    /**
+     * like query
+     * name LIKE '*wildcard*'
+     * @param name
+     * @param wildcard
+     * @return
+     */
+    public ESQueryBuilder mustLike(String name, String wildcard) {
+        query().must(QueryBuilders.wildcardQuery(name, wildcard));
+        return this;
+    }
+
+    /**
+     * not like
+     * @param name  before or after or both here with *
+     * @param wildcard
+     * @return
+     */
+    public ESQueryBuilder mustNotLike(String name, String wildcard) {
+        query().mustNot(QueryBuilders.wildcardQuery(name, wildcard));
         return this;
     }
 
@@ -260,10 +229,7 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder shouldEquals(String name, Object term) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.should(QueryBuilders.termQuery(name, term));
+        query().should(QueryBuilders.termQuery(name, term));
         return this;
     }
 
@@ -274,10 +240,7 @@ public class ESQueryBuilder {
      * @return
      */
     public <T> ESQueryBuilder shouldIn(String name, List<T> items) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.should(QueryBuilders.termsQuery(name, items));
+        query().should(QueryBuilders.termsQuery(name, items));
         return this;
     }
 
@@ -288,10 +251,7 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder shouldIn(String name, Object... items) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.should(QueryBuilders.termsQuery(name, items));
+        query().should(QueryBuilders.termsQuery(name, items));
         return this;
     }
 
@@ -304,10 +264,7 @@ public class ESQueryBuilder {
      * @return
      */
     public ESQueryBuilder shouldRange(String name, Object from, Object to) {
-        if (this.boolQuery == null) {
-            this.boolQuery = QueryBuilders.boolQuery();
-        }
-        this.boolQuery.should(QueryBuilders.rangeQuery(name).from(from).to(to));
+        query().should(QueryBuilders.rangeQuery(name).from(from).to(to));
         return this;
     }
 
@@ -341,6 +298,42 @@ public class ESQueryBuilder {
     public ESQueryBuilder desc(String name) {
         this.sorts.add(SortBuilders.fieldSort(name).order(SortOrder.DESC));
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return toString(-1, -1);
+    }
+
+    /**
+     * Returns a string of search request dsl
+     * 
+     * @param from the from, start 0
+     * @param size the size, if 0 then miss hits 
+     * @return a string of search request dsl
+     */
+    public String toString(int from, int size) {
+        SearchSourceBuilder search = new SearchSourceBuilder();
+        if (fields != null) {
+            search.fetchSource(fields, null);
+        }
+        if (boolQuery != null) {
+            search.query(boolQuery);
+        }
+        for (SortBuilder<?> sort : sorts) {
+            search.sort(sort);
+        }
+        for (AggregationBuilder agg : aggs) {
+            search.aggregation(agg);
+        }
+        if (from > -1) {
+            search.from(from);
+        }
+        if (size > -1) {
+            search.size(size);
+        }
+
+        return search.toString();
     }
 
     // --------------------------package methods-------------------------
@@ -387,40 +380,11 @@ public class ESQueryBuilder {
         return search.setSize(size);
     }
 
-    @Override
-    public String toString() {
-        return toString(-1, -1);
-    }
-
-    /**
-     * Returns a string of search request dsl
-     * 
-     * @param from the from, start 0
-     * @param size the size, if 0 then miss hits 
-     * @return a string of search request dsl
-     */
-    public String toString(int from, int size) {
-        SearchSourceBuilder search = new SearchSourceBuilder();
-        if (fields != null) {
-            search.fetchSource(fields, null);
+    private BoolQueryBuilder query() {
+        if (this.boolQuery == null) {
+            this.boolQuery = QueryBuilders.boolQuery();
         }
-        if (boolQuery != null) {
-            search.query(boolQuery);
-        }
-        for (SortBuilder<?> sort : sorts) {
-            search.sort(sort);
-        }
-        for (AggregationBuilder agg : aggs) {
-            search.aggregation(agg);
-        }
-        if (from > -1) {
-            search.from(from);
-        }
-        if (size > -1) {
-            search.size(size);
-        }
-
-        return search.toString();
+        return this.boolQuery;
     }
 
 }
