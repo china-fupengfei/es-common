@@ -25,7 +25,9 @@ public class ESQueryBuilder {
     private final String[] indices; // 索引
     private final String[] types; // 类型
     private BoolQueryBuilder boolQuery; // bool筛选条件
-    private String[] fields; // 查询的字段
+    private String[] includeFields;
+    private String[] excludeFields;
+
     private final List<SortBuilder<?>> sorts = new ArrayList<>(1); // 排序
     private final List<AggregationBuilder> aggs = new ArrayList<>(1); // 分组聚合
 
@@ -42,11 +44,19 @@ public class ESQueryBuilder {
         return new ESQueryBuilder(indices, types);
     }
 
-    public ESQueryBuilder fields(String... fields) {
-        if (this.fields != null) {
-            throw new UnsupportedOperationException("Cannot repeat set fields.");
+    public ESQueryBuilder includeFields(String... includeFields) {
+        if (this.includeFields != null) {
+            throw new UnsupportedOperationException("Cannot repeat set include fields.");
         }
-        this.fields = fields;
+        this.includeFields = includeFields;
+        return this;
+    }
+
+    public ESQueryBuilder excludeFields(String... excludeFields) {
+        if (this.excludeFields != null) {
+            throw new UnsupportedOperationException("Cannot repeat set exclude fields.");
+        }
+        this.excludeFields = excludeFields;
         return this;
     }
 
@@ -314,8 +324,8 @@ public class ESQueryBuilder {
      */
     public String toString(int from, int size) {
         SearchSourceBuilder search = new SearchSourceBuilder();
-        if (fields != null) {
-            search.fetchSource(fields, null);
+        if (includeFields != null || excludeFields != null) {
+            search.fetchSource(includeFields, excludeFields);
         }
         if (boolQuery != null) {
             search.query(boolQuery);
@@ -324,13 +334,13 @@ public class ESQueryBuilder {
             search.sort(sort);
         }
         for (AggregationBuilder agg : aggs) {
-            search.aggregation(agg);
+            search.aggregation(agg); // the aggregation default size 10
         }
         if (from > -1) {
-            search.from(from);
+            search.from(from); // default from 0
         }
         if (size > -1) {
-            search.size(size);
+            search.size(size); // default size 10
         }
 
         return search.toString();
@@ -365,8 +375,8 @@ public class ESQueryBuilder {
         if (types != null) {
             search.setTypes(types);
         }
-        if (fields != null) {
-            search.setFetchSource(fields, null);
+        if (includeFields != null || excludeFields != null) {
+            search.setFetchSource(includeFields, excludeFields);
         }
         if (boolQuery != null) {
             search.setQuery(boolQuery);
